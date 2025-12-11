@@ -7,10 +7,9 @@
 
 <style>
   :root {
-    --bg: #fff;              /* Fundo do card */
-    --text: #c20000;         /* Vermelho da urgência */
-    --btn-color: #28a745;    /* Verde CTA */
-    --border: #ffbfbf;       /* Borda do card */
+    --bg: #fff;
+    --text: #c20000;
+    --border: #ffbfbf;
   }
 
   body {
@@ -57,7 +56,6 @@
     border: 2px solid var(--border);
   }
 
-  /* Mensagem de expirado */
   #expired-msg {
     display: none;
     color: var(--text);
@@ -66,14 +64,12 @@
     font-size: 18px;
   }
 
-  /* Animações */
   @keyframes pulse { 0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);} }
   @keyframes shake { 0%{transform:translateX(0);}20%{transform:translateX(-4px);}40%{transform:translateX(4px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}100%{transform:translateX(0);} }
 
   .pulse { animation: pulse 900ms ease-in-out infinite; }
   .shake { animation: shake 300ms linear infinite; }
 
-  /* Responsivo */
   @media (max-width:420px){
     #timer { font-size:28px; min-width:160px; padding:10px 14px; }
     h2 { font-size:22px; }
@@ -156,3 +152,4 @@
 </script>
 </body>
 </html>
+
