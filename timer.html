@@ -20,13 +20,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
   }
 
   .wrap {
     max-width: 760px;
     width: 100%;
-    padding: 20px;
     text-align: center;
   }
 
@@ -50,21 +50,6 @@
     background: #fff;
   }
 
-  /* Botões da landin */
-  .cta {
-    display: inline-block;
-    background-color: var(--btn-color);
-    color: #fff;
-    font-size: 18px;
-    font-weight: 600;
-    padding: 16px 28px;
-    border-radius: 12px;
-    border: none;
-    text-decoration: none;
-    cursor: pointer;
-    margin-top: 15px;
-  }
-
   /* Mensagem de expirado */
   #expired-msg {
     display: none;
@@ -80,12 +65,18 @@
 
   .pulse { animation: pulse 900ms ease-in-out infinite; }
   .shake { animation: shake 300ms linear infinite; }
+
+  /* Responsividade */
+  @media (max-width:420px){
+    #timer { font-size:28px; min-width:160px; }
+    .card { padding:16px; }
+  }
 </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card" id="card">
-      <h2></h2>
+      <h2>🔥 Oferta Especial — Só Hoje</h2>
       <div id="timer" aria-live="polite" role="timer">00:00:00</div>
       <div id="expired-msg">⛔ Oferta encerrada. Tente novamente em breve.</div>
     </div>
@@ -95,12 +86,16 @@
 (function(){
   const TEMPO_OFERTA = 24 * 60 * 60 * 1000; // 24h
   const COOLDOWN = 3 * 24 * 60 * 60 * 1000; // 3 dias
-  const KEY_INICIO = 'oferta_inicio_v2';
-  const KEY_EXP = 'oferta_expirado_v2';
+  const KEY_INICIO = 'oferta_inicio_final';
+  const KEY_EXP = 'oferta_expirado_final';
+
   const timerEl = document.getElementById('timer');
   const expiredMsg = document.getElementById('expired-msg');
   const card = document.getElementById('card');
-  const ctaButtons = parent.document.querySelectorAll('.cta');
+
+  // Seleciona botões da landing page (fora do iframe)
+  let ctaButtons = [];
+  try { ctaButtons = parent.document.querySelectorAll('.cta'); } catch(e){}
 
   const now = () => Date.now();
 
@@ -144,7 +139,7 @@
     const s = String(Math.floor((restante%60000)/1000)).padStart(2,'0');
     timerEl.textContent = `${h}:${m}:${s}`;
 
-    // Animations
+    // Animações
     timerEl.classList.remove('shake');
     ctaButtons.forEach(b=>b.classList.remove('pulse'));
     if(restante <= 30000) ctaButtons.forEach(b=>b.classList.add('pulse'));
@@ -158,5 +153,3 @@
 </script>
 </body>
 </html>
-
-
