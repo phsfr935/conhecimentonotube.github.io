@@ -7,49 +7,57 @@
 
 <style>
   :root {
-    --bg: #ffe8e8;
-    --text: #c20000;
-    --card-bg: #fff;
-    --btn-color: #28a745;
+    --bg: #fff;              /* Fundo do card */
+    --text: #c20000;         /* Vermelho da urgência */
+    --btn-color: #28a745;    /* Verde CTA */
+    --border: #ffbfbf;       /* Borda do card */
   }
 
   body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
-    background: var(--bg);
+    background: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-    box-sizing: border-box;
+    height: 100%;
   }
 
   .wrap {
     max-width: 760px;
     width: 100%;
+    padding: 0 10px;
     text-align: center;
   }
 
   .card {
-    background: var(--card-bg);
+    background: var(--bg);
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    border: 1px solid #ffbfbf;
+    border: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 28px;
+    color: var(--text);
+    margin-bottom: 12px;
   }
 
   #timer {
-    font-size: 32px;
-    font-weight: 800;
+    font-size: 36px;
+    font-weight: 700;
     color: var(--text);
-    padding: 10px 14px;
-    border-radius: 10px;
-    min-width: 200px;
+    padding: 12px 20px;
+    border-radius: 12px;
     display: inline-block;
+    min-width: 220px;
     margin-top: 10px;
     background: #fff;
+    border: 2px solid var(--border);
   }
 
+  /* Mensagem de expirado */
   #expired-msg {
     display: none;
     color: var(--text);
@@ -58,22 +66,24 @@
     font-size: 18px;
   }
 
+  /* Animações */
   @keyframes pulse { 0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);} }
   @keyframes shake { 0%{transform:translateX(0);}20%{transform:translateX(-4px);}40%{transform:translateX(4px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}100%{transform:translateX(0);} }
 
   .pulse { animation: pulse 900ms ease-in-out infinite; }
   .shake { animation: shake 300ms linear infinite; }
 
+  /* Responsivo */
   @media (max-width:420px){
-    #timer { font-size:28px; min-width:160px; }
-    .card { padding:16px; }
+    #timer { font-size:28px; min-width:160px; padding:10px 14px; }
+    h2 { font-size:22px; }
   }
 </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card" id="card">
-      <h2>🔥 Oferta Especial — Só Hoje</h2>
+      <h2>⏳ Oferta Expira em:</h2>
       <div id="timer" aria-live="polite" role="timer">00:00:00</div>
       <div id="expired-msg">⛔ Oferta encerrada. Tente novamente em breve.</div>
     </div>
@@ -83,20 +93,19 @@
 (function(){
   const TEMPO_OFERTA = 24 * 60 * 60 * 1000; // 24h
   const COOLDOWN = 3 * 24 * 60 * 60 * 1000; // 3 dias
-  const KEY_INICIO = 'oferta_inicio_final';
-  const KEY_EXP = 'oferta_expirado_final';
-
+  const KEY_INICIO = 'oferta_inicio_v2';
+  const KEY_EXP = 'oferta_expirado_v2';
   const timerEl = document.getElementById('timer');
   const expiredMsg = document.getElementById('expired-msg');
   const card = document.getElementById('card');
-
-  let ctaButtons = [];
-  try { ctaButtons = parent.document.querySelectorAll('.cta'); } catch(e){}
+  const ctaButtons = parent.document.querySelectorAll('.cta');
 
   const now = () => Date.now();
+
   let inicio = parseInt(localStorage.getItem(KEY_INICIO) || now());
   let expirado = localStorage.getItem(KEY_EXP);
 
+  // Reset se passou cooldown
   if (now() - inicio > COOLDOWN) {
     inicio = now();
     expirado = null;
@@ -127,11 +136,13 @@
       return;
     }
 
+    // Formatar HH:MM:SS
     const h = String(Math.floor(restante/3600000)).padStart(2,'0');
     const m = String(Math.floor((restante%3600000)/60000)).padStart(2,'0');
     const s = String(Math.floor((restante%60000)/1000)).padStart(2,'0');
     timerEl.textContent = `${h}:${m}:${s}`;
 
+    // Animações
     timerEl.classList.remove('shake');
     ctaButtons.forEach(b=>b.classList.remove('pulse'));
     if(restante <= 30000) ctaButtons.forEach(b=>b.classList.add('pulse'));
