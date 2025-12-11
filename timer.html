@@ -50,7 +50,6 @@
     background: #fff;
   }
 
-  /* Mensagem de expirado */
   #expired-msg {
     display: none;
     color: var(--text);
@@ -59,14 +58,12 @@
     font-size: 18px;
   }
 
-  /* Animações */
   @keyframes pulse { 0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);} }
   @keyframes shake { 0%{transform:translateX(0);}20%{transform:translateX(-4px);}40%{transform:translateX(4px);}60%{transform:translateX(-4px);}80%{transform:translateX(4px);}100%{transform:translateX(0);} }
 
   .pulse { animation: pulse 900ms ease-in-out infinite; }
   .shake { animation: shake 300ms linear infinite; }
 
-  /* Responsividade */
   @media (max-width:420px){
     #timer { font-size:28px; min-width:160px; }
     .card { padding:16px; }
@@ -93,16 +90,13 @@
   const expiredMsg = document.getElementById('expired-msg');
   const card = document.getElementById('card');
 
-  // Seleciona botões da landing page (fora do iframe)
   let ctaButtons = [];
   try { ctaButtons = parent.document.querySelectorAll('.cta'); } catch(e){}
 
   const now = () => Date.now();
-
   let inicio = parseInt(localStorage.getItem(KEY_INICIO) || now());
   let expirado = localStorage.getItem(KEY_EXP);
 
-  // Reset se passou cooldown
   if (now() - inicio > COOLDOWN) {
     inicio = now();
     expirado = null;
@@ -133,13 +127,11 @@
       return;
     }
 
-    // Formatar HH:MM:SS
     const h = String(Math.floor(restante/3600000)).padStart(2,'0');
     const m = String(Math.floor((restante%3600000)/60000)).padStart(2,'0');
     const s = String(Math.floor((restante%60000)/1000)).padStart(2,'0');
     timerEl.textContent = `${h}:${m}:${s}`;
 
-    // Animações
     timerEl.classList.remove('shake');
     ctaButtons.forEach(b=>b.classList.remove('pulse'));
     if(restante <= 30000) ctaButtons.forEach(b=>b.classList.add('pulse'));
